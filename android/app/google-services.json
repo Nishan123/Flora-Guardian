@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "289612449242",
+    "project_id": "flora-7c55e",
+    "storage_bucket": "flora-7c55e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289612449242:android:5354651d6988d74638ece3",
+        "android_client_info": {
+          "package_name": "com.example.flora_guardian"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqIu5ZRHnIUsoGvr2YrPlRxU4E2BgbMno"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
