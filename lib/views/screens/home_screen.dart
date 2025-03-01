@@ -1,7 +1,7 @@
+import 'package:flora_guardian/controllers/user_controller.dart';
 import 'package:flora_guardian/views/custom_widgets/flowers_list.dart';
 import 'package:flora_guardian/views/custom_widgets/search_bar_field.dart';
 import 'package:flora_guardian/views/screens/add_flower_screen.dart';
-import 'package:flora_guardian/views/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -47,10 +47,7 @@ class HomeScreen extends StatelessWidget {
                 ],
             onSelected: (value) {
               if (value == 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
-                );
+                UserController().logOut();
               }
             },
           ),

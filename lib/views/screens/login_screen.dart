@@ -1,3 +1,4 @@
+import 'package:flora_guardian/controllers/user_controller.dart';
 import 'package:flora_guardian/views/custom_widgets/custom_button.dart';
 import 'package:flora_guardian/views/custom_widgets/custom_text_field.dart';
 import 'package:flora_guardian/views/screens/signup_screen.dart';
@@ -28,24 +29,24 @@ class _LoginScreenState extends State<LoginScreen> {
     var mq = MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                Positioned.fill(
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(40),
-                      bottomRight: Radius.circular(40),
-                    ),
-                    child: Image.asset(
-                      "assets/images/background.jpeg",
-                      fit: BoxFit.cover,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(40),
+                        bottomRight: Radius.circular(40),
+                      ),
+                      child: Image.asset(
+                        "assets/images/background.jpeg",
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                SingleChildScrollView(
-                  child: Column(
+                  Column(
                     children: [
                       SizedBox(
                         height: mq.height * 0.25,
@@ -115,7 +116,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: CustomButton(
                           backgroundColor: Colors.black,
-                          onPressed: () {},
+                          onPressed: () {
+                            UserController().login(
+                              emailController.text,
+                              passwordController.text,
+                            );
+                          },
                           text: "Login",
                           textColor: Colors.white,
                         ),
@@ -147,12 +153,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 40),
                     ],
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 25),
-            Text("Guardian of the Garden", style: TextStyle(fontSize: 26)),
-          ],
+                ],
+              ),
+              SizedBox(height: 25),
+              Text("Guardian of the Garden", style: TextStyle(fontSize: 26)),
+            ],
+          ),
         ),
       ),
     );
