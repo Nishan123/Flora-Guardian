@@ -1,45 +1,32 @@
 import 'package:flutter/material.dart';
 
 class SearchBarField extends StatelessWidget {
+  final Widget? prefixIcon;
   final String hintText;
-  final Icon? prefixIcon;
-  final VoidCallback? onPressedPrefix;
   final TextEditingController controller;
+  final Function(String)? onChanged;
 
   const SearchBarField({
-    super.key,
-    required this.hintText,
+    Key? key,
     this.prefixIcon,
-    this.onPressedPrefix,
+    required this.hintText,
     required this.controller,
-  });
+    this.onChanged,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10,top: 10),
-      child: TextFormField(
-        keyboardType: TextInputType.name,
-        controller: controller,
-        decoration: InputDecoration(
-          prefixIcon: prefixIcon != null
-              ? IconButton(onPressed: onPressedPrefix, icon: prefixIcon!)
-              : null,
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.black38),
-          filled: true,
-          fillColor: Colors.black12,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(
-              width: 1,
-              color: Colors.blue.withOpacity(0.2),
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
-          ),
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        prefixIcon: prefixIcon,
+        hintText: hintText,
+        filled: true,
+        fillColor: Colors.grey[200],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide.none,
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:flora_guardian/models/flower_model.dart';
 import 'package:flora_guardian/views/custom_widgets/online_flowers_list.dart';
 import 'package:flora_guardian/views/custom_widgets/search_bar_field.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class AddFlowerScreen extends StatefulWidget {
   const AddFlowerScreen({super.key});
@@ -21,6 +22,8 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
 
   bool isLoading = true;
   bool isLoadingMore = false;
+  String searchQuery = '';
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -31,6 +34,8 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
+    searchController.dispose();
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     super.dispose();
@@ -44,9 +49,24 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
     }
   }
 
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        searchQuery = query;
+        flowers.clear();
+        _flowerController.reset();
+        isLoading = true;
+      });
+      _loadFlowers();
+    });
+  }
+
   Future<void> _loadFlowers() async {
     try {
-      final fetchedFlowers = await _flowerController.fetchFlowers();
+      final fetchedFlowers = await _flowerController.fetchFlowers(
+        query: searchQuery,
+      );
       setState(() {
         flowers = fetchedFlowers;
         isLoading = false;
@@ -64,7 +84,9 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
       isLoadingMore = true;
     });
     try {
-      final newFlowers = await _flowerController.fetchFlowers();
+      final newFlowers = await _flowerController.fetchFlowers(
+        query: searchQuery,
+      );
       setState(() {
         flowers.addAll(newFlowers);
         isLoadingMore = false;
@@ -99,44 +121,47 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
               prefixIcon: const Icon(Icons.search),
               hintText: "Search 'Rose'",
               controller: searchController,
+              onChanged: _onSearchChanged,
             ),
           ),
-          // Wrapping GridView.builder in Expanded to avoid unbounded height issues
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: flowers.length + (_flowerController.hasMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == flowers.length) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  final flower = flowers[index];
-                  final String imageUrl =
-                      flower.defaultImage?.thumbnail ??
-                      flower.defaultImage?.regularUrl ??
-                      flower.defaultImage?.smallUrl ??
-                      'https://via.placeholder.com/150?text=No+Image';
+          isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount:
+                        flowers.length + (_flowerController.hasMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == flowers.length) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+                      final flower = flowers[index];
+                      final String imageUrl =
+                          flower.defaultImage?.thumbnail ??
+                          flower.defaultImage?.regularUrl ??
+                          flower.defaultImage?.smallUrl ??
+                          'https://via.placeholder.com/150?text=No+Image';
 
-                  return OnlineFlowersList(
-                    onListTap: () {},
-                    onAddTap: () {
-                      FlowerController().saveFlowerToDb(index, flower, uid);
+                      return OnlineFlowersList(
+                        onListTap: () {},
+                        onAddTap: () {
+                          FlowerController().saveFlowerToDb(index, flower, uid);
+                        },
+                        flowerImage: imageUrl,
+                        commonName:
+                            flower.commonName.isNotEmpty
+                                ? flower.commonName
+                                : 'Unknown',
+                      );
                     },
-                    flowerImage: imageUrl,
-                    commonName:
-                        flower.commonName.isNotEmpty
-                            ? flower.commonName
-                            : 'Unknown',
-                  );
-                },
+                  ),
+                ),
               ),
-            ),
-          ),
         ],
       ),
     );

@@ -11,13 +11,17 @@ class FlowerController {
   bool _hasMore = true;
 
   // load flowers from API
-  Future<List<FlowerModel>> fetchFlowers() async {
+  Future<List<FlowerModel>> fetchFlowers({String? query}) async {
     if (!_hasMore) return [];
 
     try {
-      final url = Uri.parse(
-        'https://perenual.com/api/species-list?key=sk-LOGX67c4032bc67278915&page=$_currentPage',
-      );
+      String baseUrl = 'https://perenual.com/api/species-list?key=sk-LOGX67c4032bc67278915&page=$_currentPage';
+      if (query != null && query.isNotEmpty) {
+        baseUrl = '$baseUrl&q=${Uri.encodeComponent(query)}';
+      }
+      
+      final url = Uri.parse(baseUrl);
+      debugPrint('Fetching URL: $url'); // Add this for debugging
 
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -35,10 +39,11 @@ class FlowerController {
             .map((flower) => FlowerModel.fromJson(flower))
             .toList();
       } else {
+        debugPrint('API Error: ${response.statusCode} - ${response.body}');
         throw Exception('Failed to load flowers');
       }
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Error fetching flowers: $e');
       throw Exception('Error fetching flowers: $e');
     }
   }
