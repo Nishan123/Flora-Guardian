@@ -121,19 +121,40 @@ class _SignupScreenState extends State<SignupScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: CustomButton(
                             backgroundColor: Colors.black,
-                            onPressed: () {
-                              UserModel userModel = UserModel(
-                                uid:
-                                    FirebaseAuth.instance.currentUser!.uid
-                                        .toString(),
-                                userName: usernameController.text,
-                                email: emailController.text,
-                              );
-                              UserController().signup(
+                            onPressed: () async {
+                              // Show loading indicator
+                              setState(() {
+                                isSignup = true;
+                              });
+
+                              User? user = await UserController().signup(
                                 emailController.text,
                                 passwordController.text,
                               );
-                              UserController().saveUseToDb(userModel);
+
+                              if (user != null) {
+                                UserModel userModel = UserModel(
+                                  uid: user.uid,
+                                  userName: usernameController.text,
+                                  email: emailController.text,
+                                );
+                                await UserController().saveUseToDb(userModel);
+                                Navigator.pop(
+                                  context,
+                                ); // Return to login screen
+                              } else {
+                                // Show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Failed to create account'),
+                                  ),
+                                );
+                              }
+
+                              // Hide loading indicator
+                              setState(() {
+                                isSignup = false;
+                              });
                             },
                             text: "Signup",
                             textColor: Colors.white,

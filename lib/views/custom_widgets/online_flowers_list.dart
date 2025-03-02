@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 
 class OnlineFlowersList extends StatelessWidget {
-  const OnlineFlowersList({super.key});
+  final String flowerImage;
+  final String commonName;
+
+  const OnlineFlowersList({
+    super.key,
+    required this.flowerImage,
+    required this.commonName,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 100,
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
 
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -19,29 +27,37 @@ class OnlineFlowersList extends StatelessWidget {
               color: Colors.black,
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.image,color: Colors.white,size:40,),
-          ),
-          SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Flower name",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(80),
+              child: Image.network(
+                flowerImage,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.image_not_supported);
+                },
               ),
-              Text(
-                "Flower description",
-                style: TextStyle(color: Colors.black45, fontSize: 16),
-              ),
-            ],
+            ),
           ),
-          Spacer(),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              commonName,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           TextButton(
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+            ),
             onPressed: () {},
-            child: TextButton(
-              onPressed: () {},
-              child: Row(children: [Text("Add"), Icon(Icons.add, size: 30)]),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Add"),
+                SizedBox(width: 4),
+                Icon(Icons.add, size: 24),
+              ],
             ),
           ),
         ],

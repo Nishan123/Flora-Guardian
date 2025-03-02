@@ -35,14 +35,14 @@ class UserController {
     }
   }
 
-  Future signup(String email, String password) async {
+  Future<User?> signup(String email, String password) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      return userCredential.user;
     } on FirebaseAuthException catch (e) {
       debugPrint(e.toString());
+      return null;
     }
   }
 }

@@ -1,15 +1,44 @@
 import 'package:flutter/material.dart';
 
 class FlowersList extends StatelessWidget {
-  const FlowersList({super.key});
+  final String flowerImage;
+  final String commonName;
+  const FlowersList({
+    super.key,
+    required this.flowerImage,
+    required this.commonName,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 20,
-      width: 20,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black),
-      child: Center(child: Icon(Icons.image, color: Colors.white, size: 80)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          height: 150,
+          width: 150,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            color: Colors.grey[200],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Image.network(
+              flowerImage,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(Icons.image_not_supported, size: 50);
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          commonName,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }
