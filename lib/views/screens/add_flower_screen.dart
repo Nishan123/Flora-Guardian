@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flora_guardian/controllers/flower_controller.dart';
 import 'package:flora_guardian/models/flower_model.dart';
 import 'package:flora_guardian/views/custom_widgets/online_flowers_list.dart';
@@ -16,6 +17,7 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
   final ScrollController _scrollController = ScrollController();
   final FlowerController _flowerController = FlowerController();
   List<FlowerModel> flowers = [];
+  final uid = FirebaseAuth.instance.currentUser!.uid.toString();
 
   bool isLoading = true;
   bool isLoadingMore = false;
@@ -114,9 +116,22 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
                     );
                   }
                   final flower = flowers[index];
+                  final String imageUrl =
+                      flower.defaultImage?.thumbnail ??
+                      flower.defaultImage?.regularUrl ??
+                      flower.defaultImage?.smallUrl ??
+                      'https://via.placeholder.com/150?text=No+Image';
+
                   return OnlineFlowersList(
-                    flowerImage: flower.defaultImage?.thumbnail ?? '',
-                    commonName: flower.commonName,
+                    onListTap: () {},
+                    onAddTap: () {
+                      FlowerController().saveFlowerToDb(index, flower, uid);
+                    },
+                    flowerImage: imageUrl,
+                    commonName:
+                        flower.commonName.isNotEmpty
+                            ? flower.commonName
+                            : 'Unknown',
                   );
                 },
               ),

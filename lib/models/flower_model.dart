@@ -21,17 +21,38 @@ class FlowerModel {
 
   factory FlowerModel.fromJson(Map<String, dynamic> json) {
     return FlowerModel(
-      id: json['id'],
-      commonName: json['common_name'],
-      scientificName: List<String>.from(json['scientific_name']),
-      otherName: List<String>.from(json['other_name']),
-      cycle: json['cycle'],
-      watering: json['watering'],
-      sunlight: List<String>.from(json['sunlight']),
-      defaultImage: json['default_image'] != null
-          ? DefaultImage.fromJson(json['default_image'])
-          : null,
+      id: json['id'] ?? 0,
+      commonName: json['common_name'] ?? 'Unknown',
+      scientificName:
+          json['scientific_name'] != null
+              ? List<String>.from(json['scientific_name'])
+              : [],
+      otherName:
+          json['other_name'] != null
+              ? List<String>.from(json['other_name'])
+              : [],
+      cycle: json['cycle'] ?? '',
+      watering: json['watering'] ?? '',
+      sunlight:
+          json['sunlight'] != null ? List<String>.from(json['sunlight']) : [],
+      defaultImage:
+          json['default_image'] != null
+              ? DefaultImage.fromJson(json['default_image'])
+              : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'common_name': commonName,
+      'scientific_name': scientificName,
+      'other_name': otherName,
+      'cycle': cycle,
+      'watering': watering,
+      'sunlight': sunlight,
+      'default_image': defaultImage?.toJson(),
+    };
   }
 }
 
@@ -58,14 +79,27 @@ class DefaultImage {
 
   factory DefaultImage.fromJson(Map<String, dynamic> json) {
     return DefaultImage(
-      license: json['license'],
-      licenseName: json['license_name'],
-      licenseUrl: json['license_url'],
-      originalUrl: json['original_url'],
-      regularUrl: json['regular_url'],
-      mediumUrl: json['medium_url'],
-      smallUrl: json['small_url'],
-      thumbnail: json['thumbnail'],
+      license: json['license'] ?? 0,
+      licenseName: json['license_name'] ?? '',
+      licenseUrl: json['license_url'] ?? '',
+      originalUrl: json['original_url'] ?? '',
+      regularUrl: json['regular_url'] ?? '',
+      mediumUrl: json['medium_url'] ?? '',
+      smallUrl: json['small_url'] ?? '',
+      thumbnail: json['thumbnail'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'license': license,
+      'license_name': licenseName,
+      'license_url': licenseUrl,
+      'original_url': originalUrl,
+      'regular_url': regularUrl,
+      'medium_url': mediumUrl,
+      'small_url': smallUrl,
+      'thumbnail': thumbnail,
+    };
   }
 }
