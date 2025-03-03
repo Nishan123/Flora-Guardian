@@ -3,6 +3,7 @@ import 'package:flora_guardian/controllers/flower_controller.dart';
 import 'package:flora_guardian/models/flower_model.dart';
 import 'package:flora_guardian/views/custom_widgets/online_flowers_list.dart';
 import 'package:flora_guardian/views/custom_widgets/search_bar_field.dart';
+import 'package:flora_guardian/views/screens/flower_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -148,7 +149,32 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
                           'https://via.placeholder.com/150?text=No+Image';
 
                       return OnlineFlowersList(
-                        onListTap: () {},
+                        onListTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => FlowerInfoScreen(
+                                    image:
+                                        flower.defaultImage?.mediumUrl ??
+                                        flower.defaultImage?.regularUrl ??
+                                        flower.defaultImage?.smallUrl ??
+                                        'https://via.placeholder.com/150?text=No+Image',
+                                    flowerName: flower.commonName,
+                                    sunlight:
+                                        flower.sunlight.isNotEmpty
+                                            ? flower.sunlight[0]
+                                            : 'Unknown',
+                                    wateringCycle: flower.watering,
+                                    scientifcName:
+                                        flower.scientificName.isNotEmpty
+                                            ? flower.scientificName[0]
+                                            : 'Unknown',
+                                    cycle: flower.cycle,
+                                  ),
+                            ),
+                          );
+                        },
                         onAddTap: () {
                           FlowerController().saveFlowerToDb(index, flower, uid);
                         },

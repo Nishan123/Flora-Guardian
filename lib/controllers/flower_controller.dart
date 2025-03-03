@@ -63,7 +63,7 @@ class FlowerController {
   ) async {
     try {
       Map<String, dynamic> flowerData = flower.toJson();
-      flowerData['userId'] = userUid; // Add userId to the map
+      flowerData['userId'] = userUid;
       await _db.collection("flowers").doc(id.toString()).set(flowerData);
     } catch (e) {
       debugPrint("Failed to save flower: ${e.toString()}");

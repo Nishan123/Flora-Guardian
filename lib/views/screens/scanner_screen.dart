@@ -58,10 +58,11 @@ class _ScannerScreenState extends State<ScannerScreen>
     final cameraSize = scannerSize * 0.9;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Plat Scanner"),),
+      appBar: AppBar(title: Text("Plant Scanner")),
       body: SafeArea(
         child: Center(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
@@ -74,10 +75,8 @@ class _ScannerScreenState extends State<ScannerScreen>
                 children: [
                   if (_isCameraInitialized)
                     SizedBox(
-                      width:
-                          cameraSize,
-                      height:
-                          cameraSize, 
+                      width: cameraSize,
+                      height: cameraSize,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: CameraPreview(_cameraController!),
@@ -100,6 +99,23 @@ class _ScannerScreenState extends State<ScannerScreen>
                     ),
                   ),
                 ],
+              ),
+              SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.all(18),
+                child: TextButton(
+                  onPressed: () {},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Upload from gallery ",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      Icon(Icons.image),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
