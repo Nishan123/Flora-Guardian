@@ -7,6 +7,8 @@ import 'package:flora_guardian/views/screens/flower_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:random_string/random_string.dart';
+
 class AddFlowerScreen extends StatefulWidget {
   const AddFlowerScreen({super.key});
 
@@ -176,7 +178,8 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
                           );
                         },
                         onAddTap: () {
-                          FlowerController().saveFlowerToDb(index, flower, uid);
+                          String id = randomAlphaNumeric(6);
+                          FlowerController().saveFlowerToDb(id, flower, uid);
                         },
                         flowerImage: imageUrl,
                         commonName:

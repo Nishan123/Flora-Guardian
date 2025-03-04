@@ -57,7 +57,7 @@ class FlowerController {
 
   // save flowers to database
   Future<void> saveFlowerToDb(
-    int id,
+    String id,
     FlowerModel flower,
     String userUid,
   ) async {

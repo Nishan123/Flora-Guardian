@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
 import '../custom_widgets/scanner_frame_painter.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class _ScannerScreenState extends State<ScannerScreen>
   late AnimationController _animationController;
   CameraController? _cameraController;
   bool _isCameraInitialized = false;
+  final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void initState() {
@@ -104,7 +106,10 @@ class _ScannerScreenState extends State<ScannerScreen>
               Padding(
                 padding: const EdgeInsets.all(18),
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    //open image selector
+                    _imagePicker.pickImage(source: ImageSource.gallery);
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
