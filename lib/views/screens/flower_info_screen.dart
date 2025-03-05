@@ -1,4 +1,3 @@
-import 'package:flora_guardian/views/custom_widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
 class FlowerInfoScreen extends StatelessWidget {
@@ -67,7 +66,9 @@ class FlowerInfoScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(wateringCycle),
+                      SizedBox(height:6),
+
+                      Text(wateringCycle,style: TextStyle(fontSize: 16),),
                     ],
                   ),
                 ),
@@ -90,7 +91,9 @@ class FlowerInfoScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(sunlight)
+                      SizedBox(height:6),
+
+                      Text(sunlight,style: TextStyle(fontSize: 16),)
                     ],
                   ),
                 ),
@@ -113,7 +116,8 @@ class FlowerInfoScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(cycle)
+                      SizedBox(height:6),
+                      Text(cycle,style: TextStyle(fontSize: 16),)
                     ],
                   ),
                 ),
@@ -136,17 +140,14 @@ class FlowerInfoScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(scientifcName)
+                      SizedBox(height:6),
+
+                      Text(scientifcName,style: TextStyle(fontSize: 16),)
                     ],
                   ),
                 ),
                 SizedBox(height: 20),
-                CustomButton(
-                  backgroundColor: Colors.black,
-                  onPressed: () {},
-                  text: "Add Flower",
-                  textColor: Colors.white,
-                ),
+               
               ],
             ),
           ),

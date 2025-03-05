@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class OnlineFlowersList extends StatelessWidget {
   final String flowerImage;
   final String commonName;
+  final String scientificName;
   final VoidCallback onListTap;
   final VoidCallback onAddTap;
 
@@ -11,7 +12,7 @@ class OnlineFlowersList extends StatelessWidget {
     required this.flowerImage,
     required this.commonName,
     required this.onListTap,
-    required this.onAddTap,
+    required this.onAddTap, required this.scientificName,
   });
 
   @override
@@ -67,13 +68,24 @@ class OnlineFlowersList extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(
-                commonName,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                overflow: TextOverflow.ellipsis,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    commonName,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    scientificName,
+                    style: const TextStyle(fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ),
             TextButton(
@@ -83,6 +95,7 @@ class OnlineFlowersList extends StatelessWidget {
               onPressed: onAddTap,
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
+
                 children: [
                   Text("Add"),
                   SizedBox(width: 4),

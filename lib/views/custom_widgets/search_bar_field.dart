@@ -7,12 +7,12 @@ class SearchBarField extends StatelessWidget {
   final Function(String)? onChanged;
 
   const SearchBarField({
-    Key? key,
+    super.key,
     this.prefixIcon,
     required this.hintText,
     required this.controller,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

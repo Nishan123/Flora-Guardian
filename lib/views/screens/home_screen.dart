@@ -2,10 +2,12 @@ import 'package:flora_guardian/controllers/user_controller.dart';
 import 'package:flora_guardian/views/custom_widgets/flowers_list.dart';
 import 'package:flora_guardian/views/custom_widgets/search_bar_field.dart';
 import 'package:flora_guardian/views/screens/add_flower_screen.dart';
+import 'package:flora_guardian/views/screens/flower_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flora_guardian/controllers/flower_controller.dart';
 import 'package:flora_guardian/models/flower_model.dart';
+import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +20,24 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController searchController = TextEditingController();
   final FlowerController _flowerController = FlowerController();
   final String userUid = FirebaseAuth.instance.currentUser!.uid;
+  String searchQuery = '';
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        searchQuery = query.toLowerCase();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
@@ -71,9 +92,19 @@ class _HomeScreenState extends State<HomeScreen> {
               prefixIcon: const Icon(Icons.search),
               hintText: "Search 'Rose'",
               controller: searchController,
+              onChanged: _onSearchChanged,
             ),
           ),
-          // Wrapping GridView.builder in Expanded to avoid unbounded height issues
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Text(
+              "Your Flowers",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(height: 10),
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -132,10 +163,55 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemCount: flowers.length,
                               itemBuilder: (context, index) {
                                 final flower = flowers[index];
+                                // Filter flowers based on search query
+                                if (searchQuery.isNotEmpty &&
+                                    !flower.commonName.toLowerCase().contains(
+                                      searchQuery,
+                                    ) &&
+                                    !flower.scientificName
+                                        .join(' ')
+                                        .toLowerCase()
+                                        .contains(searchQuery)) {
+                                  return const SizedBox.shrink();
+                                }
                                 return FlowersList(
                                   commonName: flower.commonName,
                                   flowerImage:
                                       flower.defaultImage?.mediumUrl ?? '',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => FlowerInfoScreen(
+                                              image:
+                                                  flower
+                                                      .defaultImage
+                                                      ?.mediumUrl ??
+                                                  flower
+                                                      .defaultImage
+                                                      ?.regularUrl ??
+                                                  flower
+                                                      .defaultImage
+                                                      ?.smallUrl ??
+                                                  'https://via.placeholder.com/150?text=No+Image',
+                                              flowerName: flower.commonName,
+                                              sunlight:
+                                                  flower.sunlight.isNotEmpty
+                                                      ? flower.sunlight[0]
+                                                      : 'Unknown',
+                                              wateringCycle: flower.watering,
+                                              scientifcName:
+                                                  flower
+                                                          .scientificName
+                                                          .isNotEmpty
+                                                      ? flower.scientificName[0]
+                                                      : 'Unknown',
+                                              cycle: flower.cycle,
+                                            ),
+                                      ),
+                                    );
+                                  },
                                 );
                               },
                             );

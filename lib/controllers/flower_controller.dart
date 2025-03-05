@@ -15,11 +15,12 @@ class FlowerController {
     if (!_hasMore) return [];
 
     try {
-      String baseUrl = 'https://perenual.com/api/species-list?key=sk-LOGX67c4032bc67278915&page=$_currentPage';
+      String baseUrl =
+          'https://perenual.com/api/species-list?key=sk-LOGX67c4032bc67278915&page=$_currentPage';
       if (query != null && query.isNotEmpty) {
         baseUrl = '$baseUrl&q=${Uri.encodeComponent(query)}';
       }
-      
+
       final url = Uri.parse(baseUrl);
       debugPrint('Fetching URL: $url'); // Add this for debugging
 
@@ -55,18 +56,40 @@ class FlowerController {
 
   bool get hasMore => _hasMore;
 
-  // save flowers to database
-  Future<void> saveFlowerToDb(
+  Future<bool> isFlowerExists(int uid, String userUid) async {
+    try {
+      final querySnapshot =
+          await _db
+              .collection("flowers")
+              .where("userId", isEqualTo: userUid)
+              .where("id", isEqualTo: uid)
+              .get();
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      debugPrint("Error checking flower existence: ${e.toString()}");
+      throw Exception('Error checking flower existence: $e');
+    }
+  }
+
+  Future<bool> saveFlowerToDb(
     String id,
     FlowerModel flower,
     String userUid,
   ) async {
     try {
+      // Check if flower already exists
+      bool exists = await isFlowerExists(flower.id, userUid);
+      if (exists) {
+        return false;
+      }
+
       Map<String, dynamic> flowerData = flower.toJson();
       flowerData['userId'] = userUid;
       await _db.collection("flowers").doc(id.toString()).set(flowerData);
+      return true;
     } catch (e) {
       debugPrint("Failed to save flower: ${e.toString()}");
+      throw Exception('Failed to save flower: $e');
     }
   }
 

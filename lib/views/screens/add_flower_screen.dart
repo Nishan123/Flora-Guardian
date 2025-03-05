@@ -177,14 +177,52 @@ class _AddFlowerScreenState extends State<AddFlowerScreen> {
                             ),
                           );
                         },
-                        onAddTap: () {
+                        onAddTap: () async {
                           String id = randomAlphaNumeric(6);
-                          FlowerController().saveFlowerToDb(id, flower, uid);
+                          try {
+                            bool success = await FlowerController()
+                                .saveFlowerToDb(id, flower, uid);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  success
+                                      ? 'Flower added to profile'
+                                      : 'This flower is already in your profile',
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                                margin: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).size.height - 100,
+                                  left: 20,
+                                  right: 20,
+                                ),
+                              ),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Error adding flower: ${e.toString()}',
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                                margin: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).size.height - 100,
+                                  left: 20,
+                                  right: 20,
+                                ),
+                              ),
+                            );
+                          }
                         },
                         flowerImage: imageUrl,
                         commonName:
                             flower.commonName.isNotEmpty
                                 ? flower.commonName
+                                : 'Unknown',
+                        scientificName:
+                            flower.scientificName.isNotEmpty
+                                ? flower.scientificName[0]
                                 : 'Unknown',
                       );
                     },
