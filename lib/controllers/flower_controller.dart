@@ -11,7 +11,10 @@ class FlowerController {
   bool _hasMore = true;
 
   // load flowers from API
-  Future<List<FlowerModel>> fetchFlowers({String? query}) async {
+  Future<List<FlowerModel>> fetchFlowers({
+    String? query,
+    int pageSize = 20,
+  }) async {
     if (!_hasMore) return [];
 
     try {
