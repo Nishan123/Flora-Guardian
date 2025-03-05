@@ -45,4 +45,29 @@ class UserController {
       return null;
     }
   }
+
+  Future<UserModel?> getUserData() async {
+    try {
+      DocumentSnapshot doc =
+          await _db.collection("users").doc(getCurrentUser()).get();
+      if (doc.exists && doc.data() != null) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return UserModel.fromJson(data);
+      }
+      return null;
+    } catch (e) {
+      debugPrint("Error fetching user data: ${e.toString()}");
+      return null;
+    }
+  }
+
+  Future<bool> updateUser(UserModel user) async {
+    try {
+      await _db.collection("users").doc(getCurrentUser()).update(user.toJson());
+      return true;
+    } catch (e) {
+      debugPrint("Error updating user data: ${e.toString()}");
+      return false;
+    }
+  }
 }

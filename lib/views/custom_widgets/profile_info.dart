@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flora_guardian/models/user_model.dart';
 
 class ProfileInfo extends StatelessWidget {
-  const ProfileInfo({super.key});
+  final UserModel? user;
+
+  const ProfileInfo({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +26,10 @@ class ProfileInfo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Username",
+                user?.userName ?? "Loading...",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
               ),
-              Text("exmaple@gmail.com", style: TextStyle(fontSize: 16)),
+              Text(user?.email ?? "Loading...", style: TextStyle(fontSize: 16)),
             ],
           ),
         ],
