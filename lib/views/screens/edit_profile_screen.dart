@@ -66,7 +66,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Column(
             children: [
               EditProfileTextField(
-                hintText: 'Username',
                 initialValue: widget.user?.userName ?? '',
                 controller: _usernameController,
                 validator: (value) {
@@ -77,7 +76,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 },
               ),
               EditProfileTextField(
-                hintText: 'Email',
                 initialValue: widget.user?.email ?? '',
                 controller: _emailController,
                 validator: (value) {

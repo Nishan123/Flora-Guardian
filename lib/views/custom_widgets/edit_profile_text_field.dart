@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class EditProfileTextField extends StatelessWidget {
-  final String hintText;
   final String initialValue;
   final bool obscureText;
   final TextEditingController controller;
@@ -9,7 +8,6 @@ class EditProfileTextField extends StatelessWidget {
 
   const EditProfileTextField({
     super.key,
-    required this.hintText,
     required this.initialValue,
     this.obscureText = false,
     required this.controller,
@@ -24,7 +22,6 @@ class EditProfileTextField extends StatelessWidget {
         controller: controller..text = initialValue,
         obscureText: obscureText,
         decoration: InputDecoration(
-          hintText: hintText,
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),

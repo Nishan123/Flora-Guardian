@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ProfileTextField extends StatelessWidget {
-  final String hintText;
   final String text;
   final bool enabled;
 
   const ProfileTextField({
     super.key,
-    required this.hintText,
     required this.text,
     this.enabled = true,
   });
@@ -20,7 +18,6 @@ class ProfileTextField extends StatelessWidget {
         initialValue: text,
         enabled: enabled,
         decoration: InputDecoration(
-          labelText: hintText,
           filled: true,
           fillColor: Colors.white,
           enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),

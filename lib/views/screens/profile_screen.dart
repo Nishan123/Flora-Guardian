@@ -78,17 +78,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Column(
                               children: [
                                 ProfileTextField(
-                                  hintText: "Username",
                                   text: userData?.userName ?? "Not available",
                                   enabled: false,
                                 ),
                                 ProfileTextField(
-                                  hintText: "Email",
                                   text: userData?.email ?? "Not available",
                                   enabled: false,
                                 ),
                                 ProfileTextField(
-                                  hintText: "Password",
                                   text: "********",
                                   enabled: false,
                                 ),
