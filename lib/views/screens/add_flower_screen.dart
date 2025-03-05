@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:random_string/random_string.dart';
 import 'package:flora_guardian/services/cache_service.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class AddFlowerScreen extends StatefulWidget {
   const AddFlowerScreen({super.key});

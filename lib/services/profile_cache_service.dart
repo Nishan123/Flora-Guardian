@@ -17,11 +17,11 @@ class ProfileCacheService {
   }
 
   UserModel? getCachedUser() {
-    if (_lastFetchTime == null || _cachedUser == null) return null;
+    if (_cachedUser == null) return null;
 
-    if (DateTime.now().difference(_lastFetchTime!) > _cacheExpiry) {
-      clearCache();
-      return null;
+    if (_lastFetchTime == null ||
+        DateTime.now().difference(_lastFetchTime!) > _cacheExpiry) {
+      return _cachedUser; // Return cached data even if expired, will refresh in background
     }
 
     return _cachedUser;

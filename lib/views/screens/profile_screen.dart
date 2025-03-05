@@ -17,28 +17,35 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final UserController _userController = UserController();
   final ProfileCacheService _profileCache = ProfileCacheService();
-  Future<UserModel?>? _userDataFuture;
+  late Future<UserModel?> _userDataFuture;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _initializeUserData();
+    // Initialize the future immediately
+    _userDataFuture = _loadInitialData();
   }
 
-  Future<void> _initializeUserData() async {
+  Future<UserModel?> _loadInitialData() async {
     try {
-      if (_userController.getCurrentUser().isNotEmpty) {
-        final cachedUser = _profileCache.getCachedUser();
-        if (cachedUser != null) {
-          setState(() => _userDataFuture = Future.value(cachedUser));
-          _refreshUserDataInBackground();
-        } else {
-          _loadFreshUserData();
-        }
+      if (_userController.getCurrentUser().isEmpty) {
+        return null;
       }
+
+      // Try to get cached data first
+      final cachedUser = _profileCache.getCachedUser();
+      if (cachedUser != null) {
+        // Refresh data in background
+        _refreshUserDataInBackground();
+        return cachedUser;
+      }
+
+      // If no cached data, load fresh data
+      return await _userController.getUserData();
     } catch (e) {
-      debugPrint('User not authenticated: $e');
+      debugPrint('Error loading initial data: $e');
+      return null;
     }
   }
 
@@ -56,30 +63,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _loadFreshUserData() async {
+  Future<void> _refreshProfile() async {
+    if (_isLoading) return;
+
     setState(() => _isLoading = true);
     try {
       final userData = await _userController.getUserData();
       if (userData != null) {
         _profileCache.cacheUser(userData);
-      }
-      if (mounted) {
-        setState(() {
-          _userDataFuture = Future.value(userData);
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() => _userDataFuture = Future.value(userData));
+        }
       }
     } catch (e) {
+      debugPrint('Error refreshing profile: $e');
+    } finally {
       if (mounted) {
         setState(() => _isLoading = false);
       }
-      debugPrint('Error loading fresh user data: $e');
     }
-  }
-
-  Future<void> _refreshProfile() async {
-    _profileCache.clearCache();
-    await _loadFreshUserData();
   }
 
   Widget _buildProfileContent(UserModel? userData) {
@@ -134,7 +136,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     ).then((_) {
       _profileCache.clearCache();
-      _initializeUserData();
+      setState(() {
+        _userDataFuture = _loadInitialData();
+      });
     });
   }
 
@@ -147,42 +151,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(
-            onPressed: _refreshProfile,
-            icon: const Icon(Icons.refresh),
-          ),
+          if (_isLoading)
+            const Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          else
+            IconButton(
+              onPressed: _refreshProfile,
+              icon: const Icon(Icons.refresh),
+            ),
           const Icon(Icons.face, color: Colors.black, size: 40),
         ],
       ),
       body: SafeArea(
-        child:
-            _userDataFuture == null
-                ? const Center(child: Text('Please login to view profile'))
-                : FutureBuilder<UserModel?>(
-                  future: _userDataFuture,
-                  builder: (context, snapshot) {
-                    if (_isLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+        child: FutureBuilder<UserModel?>(
+          future: _userDataFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                !_isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Error: ${snapshot.error}'),
-                            ElevatedButton(
-                              onPressed: _refreshProfile,
-                              child: const Text('Retry'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    return _buildProfileContent(snapshot.data);
-                  },
+            if (snapshot.hasError) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Error: ${snapshot.error}'),
+                    ElevatedButton(
+                      onPressed: _refreshProfile,
+                      child: const Text('Retry'),
+                    ),
+                  ],
                 ),
+              );
+            }
+
+            if (snapshot.data == null) {
+              return const Center(child: Text('Please login to view profile'));
+            }
+
+            return _buildProfileContent(snapshot.data);
+          },
+        ),
       ),
     );
   }
