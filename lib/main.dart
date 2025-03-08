@@ -3,10 +3,16 @@ import 'package:flora_guardian/controllers/auth_wrapper.dart';
 import 'package:flora_guardian/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:flora_guardian/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
   await Permission.camera.request();
+  await Permission.notification.request();
+  await Permission.scheduleExactAlarm.request();
+  await NotificationService().initNotification();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
