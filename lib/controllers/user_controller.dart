@@ -11,11 +11,17 @@ class UserController {
     return _auth.currentUser!.uid.toString();
   }
 
-  Future login(String email, String password) async {
+  Future<String?> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return null; // success
     } on FirebaseAuthException catch (e) {
-      debugPrint(e.toString());
+      if (e.code == 'user-not-found') {
+        return 'User not found';
+      } else if (e.code == 'wrong-password') {
+        return 'Wrong password';
+      }
+      return 'Login failed: ${e.message}';
     }
   }
 
@@ -67,6 +73,16 @@ class UserController {
       return true;
     } catch (e) {
       debugPrint("Error updating user data: ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      debugPrint("Password reset error: ${e.toString()}");
       return false;
     }
   }

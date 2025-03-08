@@ -88,6 +88,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               const SizedBox(height: 10),
                               CustomTextfield(
+                                textColor: Colors.white,
                                 hintText: "Email",
                                 controller: emailController,
                                 obscureText: false,
@@ -98,12 +99,14 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               CustomTextfield(
+                                textColor: Colors.white,
                                 hintText: "Username",
                                 controller: usernameController,
                                 obscureText: false,
                                 textInputType: TextInputType.text,
                               ),
                               CustomTextfield(
+                                textColor: Colors.white,
                                 hintText: "Password",
                                 controller: passwordController,
                                 obscureText: true,
@@ -122,6 +125,31 @@ class _SignupScreenState extends State<SignupScreen> {
                           child: CustomButton(
                             backgroundColor: Colors.black,
                             onPressed: () async {
+                              // Validate inputs
+                              if (emailController.text.isEmpty ||
+                                  passwordController.text.isEmpty ||
+                                  usernameController.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('All fields are required'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (!RegExp(
+                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                              ).hasMatch(emailController.text)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please enter a valid email'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
+
                               // Show loading indicator
                               setState(() {
                                 isSignup = true;
@@ -139,11 +167,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   email: emailController.text,
                                 );
                                 await UserController().saveUseToDb(userModel);
-                                Navigator.pop(
-                                  context,
-                                ); // Return to login screen
+                                Navigator.pop(context);
                               } else {
-                                // Show error message
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Failed to create account'),
@@ -151,7 +176,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                 );
                               }
 
-                              // Hide loading indicator
                               setState(() {
                                 isSignup = false;
                               });

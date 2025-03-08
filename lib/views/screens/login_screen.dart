@@ -2,6 +2,7 @@ import 'package:flora_guardian/controllers/user_controller.dart';
 import 'package:flora_guardian/views/custom_widgets/custom_button.dart';
 import 'package:flora_guardian/views/custom_widgets/custom_text_field.dart';
 import 'package:flora_guardian/views/screens/signup_screen.dart';
+import 'package:flora_guardian/views/screens/password_reset_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -79,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 10),
                             CustomTextfield(
+                              textColor: Colors.white,
                               hintText: "Email",
                               controller: emailController,
                               obscureText: false,
@@ -89,6 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             CustomTextfield(
+                              textColor: Colors.white,
                               hintText: "Password",
                               controller: passwordController,
                               obscureText: true,
@@ -99,7 +102,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => PasswordResetScreen(),
+                                  ),
+                                );
+                              },
                               child: Text(
                                 "Forget Password?",
                                 style: TextStyle(
@@ -116,11 +126,46 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: CustomButton(
                           backgroundColor: Colors.black,
-                          onPressed: () {
-                            UserController().login(
+                          onPressed: () async {
+                            if (emailController.text.isEmpty ||
+                                passwordController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Email and password are required',
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (!RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                            ).hasMatch(emailController.text)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please enter a valid email'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+
+                            final error = await UserController().login(
                               emailController.text,
                               passwordController.text,
                             );
+
+                            if (error != null) {
+                              if (!mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(error),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
                           },
                           text: "Login",
                           textColor: Colors.white,

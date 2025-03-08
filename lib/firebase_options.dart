@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBqIu5ZRHnIUsoGvr2YrPlRxU4E2BgbMno',
-    appId: '1:289612449242:android:5354651d6988d74638ece3',
-    messagingSenderId: '289612449242',
-    projectId: 'flora-7c55e',
-    storageBucket: 'flora-7c55e.firebasestorage.app',
+    apiKey: 'AIzaSyAyvvBZLqecBxzKWxhzjyp-hs3SRA3z-kI',
+    appId: '1:636628444713:android:92f64f539071c8ae991e38',
+    messagingSenderId: '636628444713',
+    projectId: 'flora-guardian-38334',
+    storageBucket: 'flora-guardian-38334.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCRFaKZUCQSL67IH_26JDwkLekTTp2vvgk',
-    appId: '1:289612449242:ios:d4bcc8f509c9a07938ece3',
-    messagingSenderId: '289612449242',
-    projectId: 'flora-7c55e',
-    storageBucket: 'flora-7c55e.firebasestorage.app',
+    apiKey: 'AIzaSyB7r2FH1n8-213gqHu4XMPfE4wZpfYbgXU',
+    appId: '1:636628444713:ios:1c2e3d2f10713cd2991e38',
+    messagingSenderId: '636628444713',
+    projectId: 'flora-guardian-38334',
+    storageBucket: 'flora-guardian-38334.firebasestorage.app',
     iosBundleId: 'com.example.floraGuardian',
   );
+
 }

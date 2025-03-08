@@ -6,6 +6,7 @@ class CustomTextfield extends StatelessWidget {
   final VoidCallback? onPressedSuffix;
   final TextEditingController controller;
   final bool obscureText;
+  final Color textColor;
   final TextInputType textInputType;
   const CustomTextfield({
     super.key,
@@ -15,6 +16,7 @@ class CustomTextfield extends StatelessWidget {
     this.onPressedSuffix,
     required this.obscureText,
     required this.textInputType,
+    required this.textColor,
   });
 
   @override
@@ -23,7 +25,7 @@ class CustomTextfield extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 10),
       child: TextFormField(
         keyboardType: textInputType,
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(color: textColor),
         obscureText: obscureText,
         controller: controller,
         decoration: InputDecoration(
